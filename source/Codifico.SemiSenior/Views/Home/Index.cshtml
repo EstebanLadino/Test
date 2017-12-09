@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Codifico.SemiSenior.Models.Card>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Aqui van las cartas!</h1>
+    <p class="lead">Estas son todas las cartas.</p>
+    <div class="container">
+        <div class="row col-xs-12">
+            @foreach (var item in Model)
+            {
+                <div class="col-xs-2">
+                    <img src="@item.imgPath" class="cards img-responsive" data-type="@item.type" data-value="@item.value" />
+                </div>
+            }
+            <div class="col-xs-2 text-center">
+                <a href="javascript:window.location.reload();">
+                    <img id="imgRepartir" src="~/Content/cards/cardback.png" class="img-responsive" />
+                </a>
+                <label for="imgRepartir">Repartir</label>
+            </div>
+        </div>
+        <div id="divSummary" class="row col-xs-12">
+            <div id="divCardsContext" class="col-xs-6">
+                <h2 style="font-weight:bold">Resumen</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var card1 = $(".cards")[0];
+        var card2 = $(".cards")[1];
+        var card3 = $(".cards")[2];
+        var card4 = $(".cards")[3];
+        var card5 = $(".cards")[4];
+
+        var cardsValues = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "ace", "jack", "queen", "king"];
+        var cardsTypes = ["spades", "hearts", "diamonds", "clubs"];
+
+        var values = [$(card1).attr("data-value"), $(card2).attr("data-value"), $(card3).attr("data-value"), $(card4).attr("data-value"), $(card5).attr("data-value")]
+        var types = [$(card1).attr("data-type"), $(card2).attr("data-type"), $(card3).attr("data-type"), $(card4).attr("data-type"), $(card5).attr("data-type")]
+
+        for (i = 0; i < cardsValues.length; i++) {
+            var countContext = countItems(values, cardsValues[i]).length;
+            if (countContext == 2) {
+                $("#divCardsContext").append("<br><label>Pareja de " + cardsValues[i] + ".</label>");
+            }
+
+            if (countContext == 3) {
+                $("#divCardsContext").append("<br><label>Trío de " + cardsValues[i] + ".</label>");
+            }
+
+            if (countContext == 4) {
+                $("#divCardsContext").append("<br><label>Póker de " + cardsValues[i] + ".</label>");
+            }
+        }
+
+        for (i = 0; i < cardsTypes.length; i++) {
+            var countContext = countItems(types, cardsTypes[i]).length;
+            if (countContext == 5) {
+                $("#divCardsContext").append("<br><label>Color de " + cardsTypes[i] + ".</label>");
+            }
+        }
+
+        if (isStairs(values)) {
+            $("#divCardsContext").append("<br><label>Escalera.</label>");
+        }
+    });
+
+
+    function countItems(array, valueCompare) {
+        return array.filter(array => array === valueCompare);
+    }
+
+    function isStairs(array) {
+        var result = false;
+        var ace = countItems(array, "ace").length > 0 ? true : false;
+        var two = countItems(array, "2").length > 0 ? true : false;
+        var three = countItems(array, "3").length > 0 ? true : false;
+        var four = countItems(array, "4").length > 0 ? true : false;
+        var five = countItems(array, "5").length > 0 ? true : false;
+        var six = countItems(array, "6").length > 0 ? true : false;
+        var seven = countItems(array, "7").length > 0 ? true : false;
+        var eight = countItems(array, "8").length > 0 ? true : false;
+        var nine = countItems(array, "9").length > 0 ? true : false;
+        var ten = countItems(array, "10").length > 0 ? true : false;
+        var jack = countItems(array, "jack").length > 0 ? true : false;
+        var queen = countItems(array, "queen").length > 0 ? true : false;
+        var king = countItems(array, "king").length > 0 ? true : false;
+
+        if ((ace && two && three && four && five) ||
+            (two && three && four && five && six) ||
+            (three && four && five && six && seven) ||
+            (four && five && six && seven && eight) ||
+            (five && six && seven && eight && nine) ||
+            (six && seven && eight && nine && ten) ||
+            (seven && eight && nine && ten && jack) ||
+            (eight && nine && ten && jack && queen) ||
+            (nine && ten && jack && queen && king)) {
+            result = true;
+        }
+
+        return result;
+    }
+</script>
